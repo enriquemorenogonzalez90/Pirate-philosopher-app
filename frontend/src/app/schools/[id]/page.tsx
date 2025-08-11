@@ -158,12 +158,12 @@ export default function SchoolDetail({ params }: { params: { id: string } }) {
 
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Explorar</h3>
-            <div className="space-y-2">
-              <a href="/schools" className="btn btn-secondary w-full text-center">
-                Ver Todas las Escuelas
+            <div className="space-y-3">
+              <a href="/schools" className="btn btn-secondary w-full text-center block">
+                🏛️ Ver Todas las Escuelas
               </a>
-              <a href="/authors" className="btn btn-primary w-full text-center">
-                Explorar Filósofos
+              <a href="/authors" className="btn btn-primary w-full text-center block">
+                👥 Explorar Filósofos
               </a>
             </div>
           </div>
