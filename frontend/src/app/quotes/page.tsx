@@ -2,10 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
+type Author = {
+  id: number;
+  nombre: string;
+  imagen_url?: string | null;
+};
+
 type Quote = { 
   id: number; 
   texto: string; 
   autor_id: number;
+  author?: Author;
 };
 
 export default function QuotesPage() {
@@ -81,13 +88,27 @@ export default function QuotesPage() {
               <div key={quote.id} className="card hover:shadow-md transition-shadow">
                 <blockquote className="border-l-4 border-primary-500 pl-6">
                   <p className="text-lg text-gray-800 italic mb-4">"{quote.texto}"</p>
-                  <footer className="text-sm text-gray-600">
-                    — Autor #{quote.autor_id}
+                  <footer className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {quote.author?.imagen_url && (
+                        <img
+                          src={quote.author.imagen_url}
+                          alt={quote.author.nombre}
+                          className="w-8 h-8 rounded-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(quote.author?.nombre || 'Autor')}&background=2563eb&color=fff&size=100&bold=true&format=png`;
+                          }}
+                        />
+                      )}
+                      <span className="text-sm text-gray-600">
+                        — {quote.author?.nombre || `Autor #${quote.autor_id}`}
+                      </span>
+                    </div>
                     <a 
                       href={`/authors/${quote.autor_id}`}
-                      className="ml-3 text-primary-600 hover:text-primary-700 font-medium"
+                      className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                     >
-                      Ver Autor →
+                      Ver perfil de {quote.author?.nombre || 'Autor'} →
                     </a>
                   </footer>
                 </blockquote>

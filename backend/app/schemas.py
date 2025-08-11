@@ -75,6 +75,12 @@ class QuoteRead(QuoteBase):
     autor_id: int
 
 
+class QuoteWithAuthor(QuoteBase):
+    id: int
+    autor_id: int
+    author: AuthorBase
+
+
 class AuthorReadWithRelations(AuthorRead):
     schools: List[SchoolRead] = Field(default_factory=list)
     books: List[BookRead] = Field(default_factory=list)

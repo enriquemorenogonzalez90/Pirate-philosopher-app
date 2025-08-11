@@ -1,25 +1,25 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
 from ..database import get_session
 from ..models import Quote
-from ..schemas import QuoteCreate, QuoteRead
+from ..schemas import QuoteCreate, QuoteRead, QuoteWithAuthor
 
 
 router = APIRouter(prefix="/quotes", tags=["quotes"])
 
 
-@router.get("/", response_model=List[QuoteRead])
+@router.get("/", response_model=List[QuoteWithAuthor])
 def list_quotes(
     autor_id: Optional[int] = Query(default=None),
     q: Optional[str] = Query(default=None, description="Buscar por texto"),
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     session: Session = Depends(get_session),
-) -> List[QuoteRead]:
-    stmt = select(Quote)
+) -> List[QuoteWithAuthor]:
+    stmt = select(Quote).options(selectinload(Quote.author))
     if autor_id:
         stmt = stmt.where(Quote.autor_id == autor_id)
     if q:
