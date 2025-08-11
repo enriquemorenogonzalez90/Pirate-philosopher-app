@@ -1,4 +1,8 @@
+'use client';
+
 export const dynamic = 'force-dynamic';
+
+import { useState, useEffect } from 'react';
 
 type Author = {
   id: number;
@@ -22,8 +26,28 @@ async function fetchSchool(id: string) {
   return res.json();
 }
 
-export default async function SchoolDetail({ params }: { params: { id: string } }) {
-  const school: School | null = await fetchSchool(params.id);
+export default function SchoolDetail({ params }: { params: { id: string } }) {
+  const [school, setSchool] = useState<School | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadSchool() {
+      setLoading(true);
+      const data = await fetchSchool(params.id);
+      setSchool(data);
+      setLoading(false);
+    }
+    loadSchool();
+  }, [params.id]);
+  
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Cargando información de la escuela...</p>
+      </div>
+    );
+  }
   
   if (!school) {
     return (

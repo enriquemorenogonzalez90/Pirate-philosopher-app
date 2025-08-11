@@ -1,4 +1,8 @@
+'use client';
+
 export const dynamic = 'force-dynamic';
+
+import { useState, useEffect } from 'react';
 
 type Quote = {
   id: number;
@@ -26,9 +30,31 @@ async function fetchAuthorQuotes(authorId: string) {
   return res.json();
 }
 
-export default async function AuthorQuotes({ params }: { params: { id: string } }) {
-  const author: Author | null = await fetchAuthor(params.id);
-  const quotes: Quote[] = await fetchAuthorQuotes(params.id);
+export default function AuthorQuotes({ params }: { params: { id: string } }) {
+  const [author, setAuthor] = useState<Author | null>(null);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      const authorData = await fetchAuthor(params.id);
+      const quotesData = await fetchAuthorQuotes(params.id);
+      setAuthor(authorData);
+      setQuotes(quotesData);
+      setLoading(false);
+    }
+    loadData();
+  }, [params.id]);
+  
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Cargando citas del autor...</p>
+      </div>
+    );
+  }
   
   if (!author) {
     return (

@@ -1,4 +1,8 @@
+'use client';
+
 export const dynamic = 'force-dynamic';
+
+import { useState, useEffect } from 'react';
 
 type Book = {
   id: number;
@@ -28,9 +32,31 @@ async function fetchAuthorBooks(authorId: string) {
   return res.json();
 }
 
-export default async function AuthorBooks({ params }: { params: { id: string } }) {
-  const author: Author | null = await fetchAuthor(params.id);
-  const books: Book[] = await fetchAuthorBooks(params.id);
+export default function AuthorBooks({ params }: { params: { id: string } }) {
+  const [author, setAuthor] = useState<Author | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      setLoading(true);
+      const authorData = await fetchAuthor(params.id);
+      const booksData = await fetchAuthorBooks(params.id);
+      setAuthor(authorData);
+      setBooks(booksData);
+      setLoading(false);
+    }
+    loadData();
+  }, [params.id]);
+  
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Cargando libros del autor...</p>
+      </div>
+    );
+  }
   
   if (!author) {
     return (
