@@ -2,10 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
+type Author = {
+  id: number;
+  nombre: string;
+  imagen_url?: string | null;
+};
+
 type Book = { 
   id: number; 
   titulo: string; 
   autor_id: number;
+  author: Author;
   descripcion?: string | null;
   imagen_url?: string | null;
 };
@@ -93,9 +100,18 @@ export default function BooksPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {book.titulo}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Autor #{book.autor_id}
-                  </p>
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    {book.author.imagen_url && (
+                      <img
+                        src={book.author.imagen_url}
+                        alt={book.author.nombre}
+                        className="w-6 h-6 rounded-full object-cover"
+                      />
+                    )}
+                    <p className="text-sm text-gray-600">
+                      por {book.author.nombre}
+                    </p>
+                  </div>
                   {book.descripcion && (
                     <p className="text-gray-600 text-sm line-clamp-3">
                       {book.descripcion}
@@ -106,7 +122,7 @@ export default function BooksPage() {
                       href={`/authors/${book.autor_id}`}
                       className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                     >
-                      Ver Autor →
+                      Ver perfil de {book.author.nombre} →
                     </a>
                   </div>
                 </div>

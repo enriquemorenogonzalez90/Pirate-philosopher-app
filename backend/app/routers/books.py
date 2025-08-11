@@ -1,25 +1,25 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
 from ..database import get_session
 from ..models import Book
-from ..schemas import BookCreate, BookRead
+from ..schemas import BookCreate, BookRead, BookWithAuthor
 
 
 router = APIRouter(prefix="/books", tags=["books"])
 
 
-@router.get("/", response_model=List[BookRead])
+@router.get("/", response_model=List[BookWithAuthor])
 def list_books(
     autor_id: Optional[int] = Query(default=None),
     q: Optional[str] = Query(default=None, description="Buscar por título"),
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     session: Session = Depends(get_session),
-) -> List[BookRead]:
-    stmt = select(Book)
+) -> List[BookWithAuthor]:
+    stmt = select(Book).options(selectinload(Book.author))
     if autor_id:
         stmt = stmt.where(Book.autor_id == autor_id)
     if q:

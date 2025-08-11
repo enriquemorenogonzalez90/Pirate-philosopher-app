@@ -56,6 +56,12 @@ class BookRead(BookBase):
     autor_id: int
 
 
+class BookWithAuthor(BookBase):
+    id: int
+    autor_id: int
+    author: AuthorBase
+
+
 class QuoteBase(ORMModel):
     texto: str
 
