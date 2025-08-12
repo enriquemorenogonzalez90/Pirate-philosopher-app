@@ -48,7 +48,7 @@ La aplicación está optimizada para desplegarse en AWS usando **exclusivamente 
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/filosofia-app.git
+git clone https://github.com/balladOfAThinMan/Pirate-philosopher-app.git
 cd filosofia-app
 
 # Iniciar con Docker Compose

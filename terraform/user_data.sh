@@ -52,7 +52,7 @@ version: '3.8'
 
 services:
   backend:
-    image: ghcr.io/tu-usuario/filosofia-app/backend:latest
+    image: ghcr.io/balladofathinman/pirate-philosopher-app/backend:latest
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - AWS_REGION=${AWS_REGION}
@@ -69,7 +69,7 @@ services:
           memory: 400M
 
   frontend:
-    image: ghcr.io/filosofia-app/frontend:latest
+    image: ghcr.io/balladofathinman/pirate-philosopher-app/frontend:latest
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL}
