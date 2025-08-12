@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from .database import create_db_and_tables, engine
-from .seed import seed_data_if_needed, ensure_author_images, ensure_school_images, ensure_book_covers, fix_generic_book_titles
+from .seed import seed_data_if_needed
 from .routers import authors, books, schools, quotes, stats
 
 
@@ -45,13 +45,18 @@ def read_root():
 
 @app.on_event("startup")
 def on_startup() -> None:
+    print("🚀 MAIN.PY STARTUP EJECUTÁNDOSE...")
     create_db_and_tables()
+    print("🚀 CREANDO SESIÓN Y LLAMANDO SEED...")
     with Session(engine) as session:
         seed_data_if_needed(session)
-        ensure_author_images(session)
-        ensure_school_images(session)
-        fix_generic_book_titles(session)  # Arreglar títulos genéricos primero
-        ensure_book_covers(session)       # Luego actualizar portadas
+    print("🚀 SEED COMPLETADO...")
+        # Comentamos temporalmente las funciones que descargan imágenes
+        # para permitir que la aplicación arranque más rápido
+        # ensure_author_images(session)
+        # ensure_school_images(session)
+        # fix_generic_book_titles(session)  # Arreglar títulos genéricos primero
+        # ensure_book_covers(session)       # Luego actualizar portadas
 
 
 @app.get("/health", tags=["health"]) 
