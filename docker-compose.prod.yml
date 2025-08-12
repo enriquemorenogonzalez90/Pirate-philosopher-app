@@ -1,0 +1,74 @@
+# 🆓 DOCKER COMPOSE PARA AWS FREE TIER
+# Optimizado para t2.micro (1GB RAM)
+
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - S3_BUCKET_IMAGES=${S3_BUCKET_IMAGES}
+      - CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN}
+      - USE_S3=${USE_S3}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    # Límites para t2.micro
+    deploy:
+      resources:
+        limits:
+          memory: 400M
+        reservations:
+          memory: 200M
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    # Límites para t2.micro  
+    deploy:
+      resources:
+        limits:
+          memory: 400M
+        reservations:
+          memory: 200M
+
+  # Base de datos local solo si no usamos RDS
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=filosofia_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    # Optimizado para free tier
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+        reservations:
+          memory: 100M
+    profiles:
+      - local-db  # Solo se activa con --profile local-db
+
+volumes:
+  postgres_data:
