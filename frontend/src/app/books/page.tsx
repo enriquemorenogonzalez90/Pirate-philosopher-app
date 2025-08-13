@@ -31,7 +31,7 @@ export default function BooksPage() {
 
   async function fetchBooks() {
     setLoading(true);
-    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
     const url = new URL(`${base}/books/`);
     url.searchParams.set('limit', itemsPerPage.toString());
     url.searchParams.set('offset', ((currentPage - 1) * itemsPerPage).toString());

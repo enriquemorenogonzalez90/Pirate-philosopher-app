@@ -23,7 +23,7 @@ export default function AuthorsPage() {
 
   async function fetchAuthors() {
     setLoading(true);
-    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
     const url = new URL(`${base}/authors/`);
     url.searchParams.set('limit', itemsPerPage.toString());
     url.searchParams.set('offset', ((currentPage - 1) * itemsPerPage).toString());
