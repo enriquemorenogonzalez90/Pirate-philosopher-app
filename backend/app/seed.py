@@ -210,7 +210,6 @@ def seed_data_if_needed(session: Session) -> None:
         
         author = Author(
             nombre=name,
-            pais="Grecia",
             epoca="Antigua",
             fecha_nacimiento=date(300 + i, 1, 1),
             fecha_defuncion=date(350 + i, 1, 1) if i % 3 == 0 else None,
