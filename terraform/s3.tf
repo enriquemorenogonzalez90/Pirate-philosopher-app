@@ -70,6 +70,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "images" {
     id     = "delete_old_versions"
     status = "Enabled"
 
+    filter {
+      prefix = ""
+    }
+
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -77,12 +81,3 @@ resource "aws_s3_bucket_lifecycle_configuration" "images" {
 }
 
 # Outputs
-output "s3_bucket_name" {
-  description = "Nombre del bucket S3"
-  value       = aws_s3_bucket.images.bucket
-}
-
-output "s3_bucket_url" {
-  description = "URL del bucket S3"
-  value       = "https://${aws_s3_bucket.images.bucket}.s3.amazonaws.com"
-}

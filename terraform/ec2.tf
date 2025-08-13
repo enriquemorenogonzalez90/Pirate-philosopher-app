@@ -163,11 +163,6 @@ resource "aws_instance" "main" {
 }
 
 # Outputs
-output "ec2_public_ip" {
-  description = "IP pública de EC2"
-  value       = aws_instance.main.public_ip
-}
-
 output "ec2_public_dns" {
   description = "DNS público de EC2"
   value       = aws_instance.main.public_dns

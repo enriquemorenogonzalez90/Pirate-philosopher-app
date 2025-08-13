@@ -54,12 +54,12 @@ services:
   backend:
     image: ghcr.io/balladofathinman/pirate-philosopher-app/backend:latest
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - AWS_REGION=${AWS_REGION}
-      - S3_BUCKET_IMAGES=${S3_BUCKET_IMAGES}
-      - CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN}
-      - USE_S3=${USE_S3}
-      - CORS_ORIGINS=${CORS_ORIGINS}
+      - DATABASE_URL=${database_url}
+      - AWS_REGION=${aws_region}
+      - S3_BUCKET_IMAGES=${s3_bucket}
+      - CLOUDFRONT_DOMAIN=${cloudfront_domain}
+      - USE_S3=true
+      - CORS_ORIGINS=*
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -71,8 +71,8 @@ services:
   frontend:
     image: ghcr.io/balladofathinman/pirate-philosopher-app/frontend:latest
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL}
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_CDN_URL=${cloudfront_domain}
     ports:
       - "3000:3000"
     depends_on:

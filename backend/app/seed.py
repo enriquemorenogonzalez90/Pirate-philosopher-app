@@ -230,23 +230,23 @@ def seed_data_if_needed(session: Session) -> None:
     # CREAR LIBROS SIMPLES
     for author in authors:
         book_title = f"Obras de {author.nombre}"
-            book = Book(
-                titulo=book_title,
+        book = Book(
+            titulo=book_title,
             imagen_url=book_image_url(book_title, author.nombre),
             descripcion=f"Libro de {author.nombre}",
             autor_id=author.id
-            )
-            session.add(book)
+        )
+        session.add(book)
     session.commit()
     print("✅ Libros creados")
     
     # CREAR CITAS SIMPLES
     for author in authors:
-            quote = Quote(
+        quote = Quote(
             texto=f"Sabiduría de {author.nombre}",
-                autor_id=author.id
-            )
-            session.add(quote)
+            autor_id=author.id
+        )
+        session.add(quote)
     session.commit()
     print("✅ Citas creadas")
     

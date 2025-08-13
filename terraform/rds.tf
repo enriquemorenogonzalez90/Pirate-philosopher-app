@@ -50,8 +50,8 @@ resource "aws_db_instance" "main" {
   # Configuración FREE TIER
   identifier     = "${local.name_prefix}-db"
   engine         = "postgres"
-  engine_version = "13.13"
-  instance_class = "db.t2.micro"  # ✅ FREE TIER
+  # engine_version = "15.5"  # Comentado para usar la versión por defecto
+  instance_class = "db.t3.micro"  # ✅ FREE TIER
   
   # Storage FREE TIER
   allocated_storage     = 20     # ✅ 20GB gratis
@@ -61,7 +61,7 @@ resource "aws_db_instance" "main" {
 
   # Database configuration
   db_name  = "filosofia_db"
-  username = "admin"
+  username = "filosofia_admin"
   password = var.db_password
 
   # Network
@@ -89,11 +89,6 @@ resource "aws_db_instance" "main" {
 }
 
 # Outputs
-output "rds_endpoint" {
-  description = "RDS endpoint"
-  value       = aws_db_instance.main.endpoint
-}
-
 output "rds_port" {
   description = "RDS port"
   value       = aws_db_instance.main.port
