@@ -27,7 +27,7 @@ async function fetchAuthor(id: string) {
 
 async function fetchAuthorBooks(authorId: string) {
   const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
-  const res = await fetch(`${base}/authors/${authorId}/books/`, { cache: 'no-store' });
+  const res = await fetch(`${base}/authors/${authorId}/books`, { cache: 'no-store' });
   if (!res.ok) return [];
   return res.json();
 }

@@ -17,7 +17,7 @@ async function fetchRandomQuote() {
 
 async function fetchAuthorName(authorId: number) {
   const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
-  const res = await fetch(`${base}/authors/${authorId}/`, { cache: 'no-store' });
+  const res = await fetch(`${base}/authors/${authorId}`, { cache: 'no-store' });
   if (!res.ok) return null;
   const author = await res.json();
   return author.nombre;
