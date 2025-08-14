@@ -86,3 +86,6 @@ jobs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          NEXT_PUBLIC_API_URL=http://3.82.93.186:8000
+          NEXT_PUBLIC_CDN_URL=https://filosofia-app-prod-images-rxtbabiy.s3.amazonaws.com

@@ -14,7 +14,11 @@ RUN npm ci --only=production
 # Copiar código fuente
 COPY . .
 
-# Build para producción
+# Build para producción con variables de entorno
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_CDN_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_CDN_URL=${NEXT_PUBLIC_CDN_URL}
 RUN npm run build
 
 # STAGE 2: Runtime
