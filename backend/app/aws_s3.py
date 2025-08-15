@@ -30,8 +30,13 @@ class S3Manager:
         Retorna la URL de CloudFront si es exitoso
         """
         try:
+            # Headers para cumplir con Wikipedia User-Agent policy
+            headers = {
+                'User-Agent': 'FilosofiaApp/1.0 (https://github.com/balladOfAThinMan/Pirate-philosopher-app; enrique@filosofiaapp.com) requests/2.31.0'
+            }
+            
             # Descargar imagen
-            response = requests.get(image_url, timeout=10)
+            response = requests.get(image_url, headers=headers, timeout=10)
             response.raise_for_status()
             
             # Determinar content type

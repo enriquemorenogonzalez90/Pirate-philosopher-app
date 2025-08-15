@@ -62,7 +62,7 @@ class WikipediaImageExtractor:
             time.sleep(0.5)
             
             headers = {
-                'User-Agent': 'Mozilla/5.0 (compatible; FilosofiaBot/1.0)'
+                'User-Agent': 'FilosofiaApp/1.0 (https://github.com/balladOfAThinMan/Pirate-philosopher-app; enrique@filosofiaapp.com) requests/2.31.0'
             }
             
             response = requests.get(wikipedia_url, headers=headers, timeout=10)
