@@ -10,6 +10,8 @@ from typing import Optional
 from botocore.exceptions import ClientError
 import requests
 from io import BytesIO
+import urllib.parse
+import unicodedata
 
 class S3Manager:
     def __init__(self):
@@ -45,11 +47,12 @@ class S3Manager:
                 }
             )
             
-            # Retornar URL de CloudFront
+            # Retornar URL de CloudFront con URL encoding
+            encoded_key = urllib.parse.quote(s3_key, safe='/')
             if self.cloudfront_domain:
-                return f"{self.cloudfront_domain}/{s3_key}"
+                return f"{self.cloudfront_domain}/{encoded_key}"
             else:
-                return f"https://{self.bucket_images}.s3.amazonaws.com/{s3_key}"
+                return f"https://{self.bucket_images}.s3.amazonaws.com/{encoded_key}"
                 
         except Exception as e:
             print(f"Error uploading image to S3: {e}")
@@ -69,10 +72,11 @@ class S3Manager:
                 }
             )
             
+            encoded_key = urllib.parse.quote(s3_key, safe='/')
             if self.cloudfront_domain:
-                return f"{self.cloudfront_domain}/{s3_key}"
+                return f"{self.cloudfront_domain}/{encoded_key}"
             else:
-                return f"https://{self.bucket_images}.s3.amazonaws.com/{s3_key}"
+                return f"https://{self.bucket_images}.s3.amazonaws.com/{encoded_key}"
                 
         except Exception as e:
             print(f"Error uploading file to S3: {e}")
@@ -92,14 +96,20 @@ class S3Manager:
         """
         Genera una key única para la imagen de un autor
         """
-        safe_name = author_name.lower().replace(' ', '-').replace('ñ', 'n')
+        # Normalizar caracteres Unicode (quitar acentos)
+        normalized = unicodedata.normalize('NFD', author_name)
+        safe_name = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+        safe_name = safe_name.lower().replace(' ', '-').replace("'", "").replace('"', '')
         return f"authors/{safe_name}.jpg"
     
     def generate_school_image_key(self, school_name: str) -> str:
         """
         Genera una key única para la imagen de una escuela
         """
-        safe_name = school_name.lower().replace(' ', '-').replace('ñ', 'n')
+        # Normalizar caracteres Unicode (quitar acentos)
+        normalized = unicodedata.normalize('NFD', school_name)
+        safe_name = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+        safe_name = safe_name.lower().replace(' ', '-').replace("'", "").replace('"', '')
         return f"schools/{safe_name}.jpg"
     
     def generate_book_image_key(self, book_title: str, author_name: str) -> str:

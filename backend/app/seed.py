@@ -3,6 +3,7 @@ from .models import Author, School, Book, Quote
 import random
 import os
 from datetime import date
+import urllib.parse
 
 # Importar S3 manager solo en producción
 USE_S3 = os.getenv('USE_S3', 'false').lower() == 'true'
@@ -119,13 +120,14 @@ def author_image_url(name: str) -> str:
             s3_url = s3_manager.upload_image_from_url(avatar_url, s3_key)
             return s3_url if s3_url else avatar_url
         else:
-            # Ya existe en S3
+            # Ya existe en S3 - URL encode la key
+            encoded_key = urllib.parse.quote(s3_key, safe='/')
             cloudfront_domain = os.getenv('CLOUDFRONT_DOMAIN', '')
             if cloudfront_domain:
-                return f"{cloudfront_domain}/{s3_key}"
+                return f"{cloudfront_domain}/{encoded_key}"
             else:
                 bucket = os.getenv('S3_BUCKET_IMAGES', 'filosofia-app-images')
-                return f"https://{bucket}.s3.amazonaws.com/{s3_key}"
+                return f"https://{bucket}.s3.amazonaws.com/{encoded_key}"
     else:
         # En desarrollo, usar UI Avatars directamente
         return f"https://ui-avatars.com/api/?name={name.replace(' ', '+')}&background=random&size=300"
@@ -140,12 +142,14 @@ def school_image_url(name: str) -> str:
             s3_url = s3_manager.upload_image_from_url(avatar_url, s3_key)
             return s3_url if s3_url else avatar_url
         else:
+            # URL encode la key para escuelas también
+            encoded_key = urllib.parse.quote(s3_key, safe='/')
             cloudfront_domain = os.getenv('CLOUDFRONT_DOMAIN', '')
             if cloudfront_domain:
-                return f"{cloudfront_domain}/{s3_key}"
+                return f"{cloudfront_domain}/{encoded_key}"
             else:
                 bucket = os.getenv('S3_BUCKET_IMAGES', 'filosofia-app-images')
-                return f"https://{bucket}.s3.amazonaws.com/{s3_key}"
+                return f"https://{bucket}.s3.amazonaws.com/{encoded_key}"
     else:
         return f"https://ui-avatars.com/api/?name={name.replace(' ', '+')}&background=blue&color=white&size=300"
 
