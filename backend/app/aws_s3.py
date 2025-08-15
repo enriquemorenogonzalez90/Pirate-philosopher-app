@@ -1,3 +1,4 @@
+
 """
 🚀 AWS S3 Integration para Filosofía App
 Manejo de imágenes y archivos estáticos en S3
@@ -40,8 +41,7 @@ class S3Manager:
                 self.bucket_images,
                 s3_key,
                 ExtraArgs={
-                    'ContentType': content_type,
-                    'ACL': 'public-read'
+                    'ContentType': content_type
                 }
             )
             
@@ -65,8 +65,7 @@ class S3Manager:
                 self.bucket_images,
                 s3_key,
                 ExtraArgs={
-                    'ContentType': content_type,
-                    'ACL': 'public-read'
+                    'ContentType': content_type
                 }
             )
             
