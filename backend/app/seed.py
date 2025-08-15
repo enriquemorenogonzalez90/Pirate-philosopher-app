@@ -10,6 +10,7 @@ USE_S3 = os.getenv('USE_S3', 'false').lower() == 'true'
 if USE_S3:
     try:
         from .aws_s3 import s3_manager
+        from .wikipedia_images import get_wikipedia_image_url
     except ImportError:
         USE_S3 = False
         print("⚠️ S3 no disponible, usando URLs locales")
@@ -109,14 +110,25 @@ SCHOOL_DATA = [
 ]
 
 def author_image_url(name: str) -> str:
-    """Genera URL de imagen para autor (S3 en producción, UI Avatars en desarrollo)"""
+    """Genera URL de imagen para autor (Wikipedia + S3 en producción, UI Avatars en desarrollo)"""
     if USE_S3:
-        # En producción, usar S3
+        # En producción, usar Wikipedia + S3
         s3_key = s3_manager.generate_author_image_key(name)
-        avatar_url = f"https://ui-avatars.com/api/?name={name.replace(' ', '+')}&background=random&size=300"
         
         # Subir a S3 si no existe
         if not s3_manager.file_exists(s3_key):
+            # 1. Intentar obtener imagen real de Wikipedia
+            wikipedia_url = get_wikipedia_image_url(name)
+            
+            if wikipedia_url:
+                print(f"📷 Usando imagen de Wikipedia para {name}")
+                s3_url = s3_manager.upload_image_from_url(wikipedia_url, s3_key)
+                if s3_url:
+                    return s3_url
+            
+            # 2. Fallback a avatar generado si Wikipedia falla
+            print(f"🎨 Usando avatar generado para {name}")
+            avatar_url = f"https://ui-avatars.com/api/?name={name.replace(' ', '+')}&background=random&size=300"
             s3_url = s3_manager.upload_image_from_url(avatar_url, s3_key)
             return s3_url if s3_url else avatar_url
         else:
