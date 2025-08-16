@@ -15,7 +15,7 @@ export default function AuthorsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 50;
 
   useEffect(() => {
     fetchAuthors();
@@ -35,7 +35,7 @@ export default function AuthorsPage() {
         const data = await res.json();
         setAuthors(data);
         // Simular total de páginas (en un caso real vendría del backend)
-        setTotalPages(Math.ceil(40 / itemsPerPage)); // 40 autores del seed
+        setTotalPages(Math.ceil(200 / itemsPerPage)); // 200 autores totales
       }
     } catch (error) {
       console.error('Error fetching authors:', error);
