@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from .models import Author, School, Book, Quote
+from .models import Author, School, Book, Quote, author_school_table
 import random
 import os
 from datetime import date
@@ -198,9 +198,11 @@ def seed_data_if_needed(session: Session) -> None:
 
     print("🚀 FORZANDO RECREACIÓN COMPLETA...")
     
-    # LIMPIAR TODO
+    # LIMPIAR TODO - Orden correcto para evitar errores de foreign key
     session.query(Quote).delete()
-    session.query(Book).delete() 
+    session.query(Book).delete()
+    # Limpiar tabla de relaciones many-to-many primero
+    session.execute(author_school_table.delete())
     session.query(Author).delete()
     session.query(School).delete()
     session.commit()
