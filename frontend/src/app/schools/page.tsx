@@ -9,6 +9,40 @@ type School = {
   imagen_url?: string | null;
 };
 
+// Colores temáticos para cada escuela
+const SCHOOL_COLORS: Record<string, string> = {
+  "Platonismo": "bg-blue-500",
+  "Aristotelismo": "bg-amber-800", 
+  "Estoicismo": "bg-green-600",
+  "Epicureísmo": "bg-pink-500",
+  "Escolástica": "bg-purple-600",
+  "Humanismo": "bg-orange-400",
+  "Racionalismo": "bg-blue-600",
+  "Empirismo": "bg-green-500",
+  "Idealismo": "bg-purple-500",
+  "Materialismo": "bg-yellow-600",
+  "Utilitarismo": "bg-green-400",
+  "Deontología": "bg-blue-400",
+  "Existencialismo": "bg-gray-700",
+  "Fenomenología": "bg-indigo-400",
+  "Marxismo": "bg-red-600",
+  "Feminismo": "bg-pink-400",
+  "Pragmatismo": "bg-yellow-700",
+  "Positivismo": "bg-indigo-700",
+  "Estructuralismo": "bg-gray-500",
+  "Post-estructuralismo": "bg-gray-800",
+  "Hermenéutica": "bg-purple-700",
+  "Analítica": "bg-blue-900",
+  "Continental": "bg-green-700",
+  "Budismo": "bg-orange-500",
+  "Confucianismo": "bg-red-700",
+  "Taoísmo": "bg-teal-600",
+  "Hinduismo": "bg-orange-600",
+  "Nihilismo": "bg-black",
+  "Relativismo": "bg-gray-500",
+  "Absolutismo": "bg-white border"
+};
+
 export default function SchoolsPage() {
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,13 +116,17 @@ export default function SchoolsPage() {
             {filteredSchools.map((school: School) => (
               <div key={school.id} className="card hover:shadow-md transition-shadow">
                 <div className="text-center">
-                  {school.imagen_url && (
-                    <img
-                      src={school.imagen_url}
-                      alt={school.nombre}
-                      className="w-20 h-20 rounded-lg mx-auto mb-4 object-cover"
-                    />
-                  )}
+                  <div 
+                    className={`w-20 h-20 rounded-lg mx-auto mb-4 flex items-center justify-center ${
+                      SCHOOL_COLORS[school.nombre] || 'bg-gray-400'
+                    }`}
+                  >
+                    <span className={`text-xs font-bold ${
+                      school.nombre === 'Absolutismo' ? 'text-gray-700' : 'text-white'
+                    } text-center px-1`}>
+                      {school.nombre}
+                    </span>
+                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     <a href={`/schools/${school.id}`} className="hover:text-primary-600">
                       {school.nombre}
