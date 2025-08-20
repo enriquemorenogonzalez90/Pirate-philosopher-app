@@ -1,128 +1,59 @@
 # 🏛️ Filosofía App
 
-Una aplicación web moderna para explorar la filosofía a través de autores, escuelas de pensamiento, libros y citas inspiradoras.
+Aplicación web moderna para explorar la filosofía a través de autores, escuelas, libros y citas inspiradoras.
 
-## 🚀 Características
+## ✨ Características
 
-- **40+ Filósofos** con biografías detalladas
-- **20+ Escuelas** filosóficas documentadas  
-- **70+ Libros** clásicos y contemporáneos
-- **60+ Citas** inspiradoras y reflexivas
-- **Búsqueda avanzada** por autor, escuela o época
-- **Interfaz moderna** con React y Next.js
-- **API robusta** con FastAPI y PostgreSQL
+- **91 Filósofos** con biografías detalladas y épocas correctas
+- **30+ Escuelas** filosóficas con descripciones
+- **Imágenes reales** extraídas de Wikipedia + S3
+- **Búsqueda y paginación** optimizada (50 autores por página)
+- **Interfaz responsive** con Tailwind CSS
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack
 
-### Frontend
-- **Next.js 13** - Framework React
-- **TypeScript** - Tipado estático
-- **Tailwind CSS** - Estilos utilitarios
-- **Responsive Design** - Móvil y desktop
-
-### Backend  
-- **FastAPI** - Framework Python moderno
-- **SQLAlchemy** - ORM para base de datos
-- **PostgreSQL** - Base de datos relacional
-- **Pydantic** - Validación de datos
-
-### DevOps
-- **Docker** - Contenedores
-- **Docker Compose** - Orquestación local
-- **Terraform** - Infrastructure as Code
-- **GitHub Actions** - CI/CD automático
-
-## 🆓 Deployment AWS Free Tier
-
-La aplicación está optimizada para desplegarse en AWS usando **exclusivamente recursos del Free Tier** - **$0.00 de costo**.
-
-### Recursos AWS (Gratis por 12 meses)
-- **EC2 t2.micro** - Servidor de aplicación
-- **RDS db.t2.micro** - Base de datos PostgreSQL  
-- **S3 5GB** - Almacenamiento de imágenes
-- **CloudFront** - CDN global
+**Frontend:** Next.js 14, TypeScript, Tailwind CSS  
+**Backend:** FastAPI, SQLAlchemy, PostgreSQL  
+**DevOps:** Docker, Terraform, GitHub Actions  
+**AWS:** EC2, RDS, S3, CloudFront (Free Tier)
 
 ## 🚀 Quick Start
 
-### Desarrollo Local
-
 ```bash
-# Clonar repositorio
-git clone https://github.com/balladOfAThinMan/Pirate-philosopher-app.git
-cd filosofia-app
-
-# Iniciar con Docker Compose
+# Desarrollo local
+git clone https://github.com/enriquemorenogonzalez90/Pirate-philosopher-app.git
 docker-compose up -d
 
-# URLs locales
+# URLs
 # Frontend: http://localhost:3000
-# Backend: http://localhost:8000
-# API Docs: http://localhost:8000/docs
+# Backend: http://localhost:8000/docs
 ```
 
-### Deployment AWS
-
 ```bash
-# Prerequisitos
-aws configure
-terraform --version
-
-# Deployment automático
+# Deployment AWS
 ./deploy-terraform.sh apply
-
-# Ver URLs de producción
 ./deploy-terraform.sh outputs
 ```
 
-## 📚 Documentación
+## 📁 Estructura
 
-- [🏗️ Terraform Setup](terraform/README.md) - Deployment AWS completo
-- [🐳 Docker Guide](docs/docker.md) - Desarrollo local
-- [🔧 API Documentation](docs/api.md) - Endpoints y schemas
+```
+├── frontend/          # Next.js app
+├── backend/           # FastAPI + PostgreSQL
+│   ├── app/           # Core application
+│   ├── biography_data.py    # 99 detailed biographies
+│   └── *.py           # Utility scripts
+├── terraform/         # AWS infrastructure
+└── CLAUDE.md         # Development guide
+```
 
-## 🤝 Contribuir
+## 🔧 Scripts Disponibles
 
-1. Fork el proyecto
-2. Crea tu rama (`git checkout -b feature/nueva-caracteristica`)
-3. Commit tus cambios (`git commit -am 'Agregar nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
-
-## 🎯 Roadmap
-
-- [ ] **Expandir contenido** - 200 autores, 100 escuelas
-- [ ] **Modo offline** - PWA con cache
-- [ ] **Autenticación** - Favoritos y notas personales
-- [ ] **API pública** - Acceso para desarrolladores
-- [ ] **Multiidioma** - Español, inglés, francés
-- [ ] **Modo oscuro** - Tema personalizable
-
-## 🏆 Características Destacadas
-
-### 🎨 Diseño Moderno
-- Interfaz limpia y minimalista
-- Navegación intuitiva
-- Responsive design para todos los dispositivos
-
-### ⚡ Rendimiento
-- Carga rápida con Next.js
-- API optimizada con FastAPI
-- CDN para imágenes globales
-
-### 🔒 Seguridad
-- Validación de datos con Pydantic
-- SQL injection protection
-- CORS configurado correctamente
-
-### 📊 Datos Ricos
-- Biografías detalladas de filósofos
-- Contexto histórico de escuelas
-- Citas con fuentes verificadas
+- **Biografías:** `update_biographies.py`, `check_biography_progress.py`
+- **Imágenes:** `better_image_script.py`, `force_regenerate_images.py`
+- **Limpieza:** `remove_*.py`, `verify_removal.py`
+- **Debug:** `debug_dates.py`, `check_authors.py`
 
 ---
 
-**Desarrollado con ❤️ para expandir el conocimiento filosófico**# Trigger fresh build - mar 12 ago 2025 20:17:03 CEST
+**Desarrollado con ❤️ para expandir el conocimiento filosófico**
