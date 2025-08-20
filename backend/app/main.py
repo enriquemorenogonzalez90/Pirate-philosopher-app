@@ -26,9 +26,14 @@ app = FastAPI(title="Biblioteca de Filosofía API", version="1.0.0")
 origins = get_cors_origins_from_env()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, especificar dominios específicos
+    allow_origins=origins if origins != ["*"] else [
+        "http://localhost:3000",          # Frontend desarrollo local
+        "http://localhost:8000",          # Backend desarrollo local
+        "http://3.82.93.186:3000",        # Tu servidor EC2 actual
+        "http://3.82.93.186:8000",        # API EC2 actual
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
