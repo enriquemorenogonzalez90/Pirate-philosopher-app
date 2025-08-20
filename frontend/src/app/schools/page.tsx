@@ -116,17 +116,6 @@ export default function SchoolsPage() {
             {filteredSchools.map((school: School) => (
               <div key={school.id} className="card hover:shadow-md transition-shadow">
                 <div className="text-center">
-                  <div 
-                    className={`w-20 h-20 rounded-lg mx-auto mb-4 flex items-center justify-center ${
-                      SCHOOL_COLORS[school.nombre] || 'bg-gray-400'
-                    }`}
-                  >
-                    <span className={`text-xs font-bold ${
-                      school.nombre === 'Absolutismo' ? 'text-gray-700' : 'text-white'
-                    } text-center px-1`}>
-                      {school.nombre}
-                    </span>
-                  </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     <a href={`/schools/${school.id}`} className="hover:text-primary-600">
                       {school.nombre}
