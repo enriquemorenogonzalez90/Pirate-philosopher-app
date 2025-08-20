@@ -66,6 +66,118 @@ PHILOSOPHER_EPOCHS = {
     "Antonio Gramsci": "Contemporánea", "Michel Foucault": "Contemporánea"
 }
 
+# Mapeo correcto de autores a escuelas filosóficas
+AUTHOR_SCHOOLS = {
+    # Filosofía Antigua Griega
+    "Sócrates": ["Platonismo"],
+    "Platón": ["Platonismo"],
+    "Aristóteles": ["Aristotelismo"],
+    "Epicuro": ["Epicureísmo"],
+    "Zenón de Citio": ["Estoicismo"],
+    "Pitágoras": ["Platonismo"],
+    "Heráclito": ["Materialismo"],
+    "Parménides": ["Idealismo"],
+    "Tales de Mileto": ["Materialismo"],
+    "Anaximandro": ["Materialismo"],
+    "Anaxímenes": ["Materialismo"],
+    "Jenófanes": ["Materialismo"],
+    "Protágoras": ["Relativismo"],
+    "Gorgias": ["Relativismo"],
+    "Antístenes": ["Estoicismo"],
+    "Cleantes": ["Estoicismo"],
+    "Empédocles": ["Materialismo"],
+    "Anaxágoras": ["Materialismo"],
+    
+    # Estoicos Romanos
+    "Séneca": ["Estoicismo"],
+    "Marco Aurelio": ["Estoicismo"],
+    "Epicteto": ["Estoicismo"],
+    
+    # Neoplatónicos
+    "Plotino": ["Platonismo"],
+    "Proclo": ["Platonismo"],
+    "Jámblico": ["Platonismo"],
+    "Porfirio": ["Platonismo"],
+    "Simplicio": ["Aristotelismo"],
+    "Alejandro de Afrodisias": ["Aristotelismo"],
+    
+    # Filósofos Medievales
+    "Tomás de Aquino": ["Escolástica", "Aristotelismo"],
+    "San Agustín": ["Platonismo", "Escolástica"],
+    "Anselmo de Canterbury": ["Escolástica"],
+    "Pedro Abelardo": ["Escolástica"],
+    "Juan Escoto Erígena": ["Escolástica"],
+    "Boecio": ["Platonismo", "Escolástica"],
+    "Alberto Magno": ["Escolástica", "Aristotelismo"],
+    "Buenaventura": ["Escolástica", "Platonismo"],
+    "Meister Eckhart": ["Escolástica"],
+    "Duns Escoto": ["Escolástica"],
+    "Guillermo de Ockham": ["Escolástica"],
+    
+    # Filosofía Oriental
+    "Confucio": ["Confucianismo"],
+    "Lao Tzu": ["Taoísmo"],
+    "Buda": ["Budismo"],
+    "Nagarjuna": ["Budismo"],
+    "Mencio": ["Confucianismo"],
+    "Mozi": ["Confucianismo"],
+    "Zhuangzi": ["Taoísmo"],
+    "Shankara": ["Hinduismo"],
+    
+    # Filósofos Modernos
+    "René Descartes": ["Racionalismo"],
+    "Baruch Spinoza": ["Racionalismo", "Materialismo"],
+    "John Locke": ["Empirismo"],
+    "David Hume": ["Empirismo"],
+    "Immanuel Kant": ["Idealismo"],
+    
+    # Filósofos Contemporáneos
+    "Georg Hegel": ["Idealismo"],
+    "Friedrich Nietzsche": ["Nihilismo"],
+    "Søren Kierkegaard": ["Existencialismo"],
+    "Karl Marx": ["Marxismo", "Materialismo"],
+    "Arthur Schopenhauer": ["Idealismo"],
+    "Ludwig Wittgenstein": ["Analítica"],
+    "Jean-Paul Sartre": ["Existencialismo"],
+    "Simone de Beauvoir": ["Existencialismo", "Feminismo"],
+    "Edmund Husserl": ["Fenomenología"],
+    "Maurice Merleau-Ponty": ["Fenomenología"],
+    "Emmanuel Levinas": ["Fenomenología"],
+    "Jacques Derrida": ["Post-estructuralismo"],
+    "Hannah Arendt": ["Continental"],
+    "Jürgen Habermas": ["Continental"],
+    "John Rawls": ["Deontología"],
+    "Martha Nussbaum": ["Feminismo"],
+    "Judith Butler": ["Feminismo", "Post-estructuralismo"],
+    "Robert Nozick": ["Deontología"],
+    "Slavoj Žižek": ["Marxismo", "Continental"],
+    
+    # Filósofos Modernos/Contemporáneos añadidos
+    "José Ortega y Gasset": ["Continental"],
+    "María Zambrano": ["Continental"],
+    "Miguel de Unamuno": ["Existencialismo"],
+    "Henri Bergson": ["Continental"],
+    "Bertrand Russell": ["Analítica"],
+    "William James": ["Pragmatismo"],
+    "John Dewey": ["Pragmatismo"],
+    "Max Weber": ["Continental"],
+    "Alfred North Whitehead": ["Analítica"],
+    "Hans-Georg Gadamer": ["Hermenéutica"],
+    "Paul Ricoeur": ["Hermenéutica"],
+    "Walter Benjamin": ["Marxismo"],
+    "Antonio Gramsci": ["Marxismo"],
+    "Michel Foucault": ["Post-estructuralismo"],
+    
+    # Filósofos adicionales
+    "Filón de Alejandría": ["Platonismo"],
+    "Diógenes Laercio": ["Estoicismo"],
+    "Hierocles": ["Estoicismo"],
+    "Luciano de Samósata": ["Relativismo"],
+    "Galeno": ["Aristotelismo"],
+    "Ptolomeo": ["Aristotelismo"],
+    "Apolonio de Tiana": ["Platonismo"]
+}
+
 # Importar S3 manager solo en producción
 USE_S3 = os.getenv('USE_S3', 'false').lower() == 'true'
 if USE_S3:
@@ -260,9 +372,12 @@ def seed_data_if_needed(session: Session) -> None:
         session.add(author)
         authors.append(author)
 
-        # Asignar escuela
-        if schools:
-            author.schools.append(schools[i % len(schools)])
+        # Asignar escuelas usando mapeo correcto
+        if schools and name in AUTHOR_SCHOOLS:
+            schools_by_name = {school.nombre: school for school in schools}
+            for school_name in AUTHOR_SCHOOLS[name]:
+                if school_name in schools_by_name:
+                    author.schools.append(schools_by_name[school_name])
 
     session.commit()
     print(f"✅ {len(authors)} autores")
