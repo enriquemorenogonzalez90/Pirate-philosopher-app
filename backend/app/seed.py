@@ -330,6 +330,28 @@ def seed_data_if_needed(session: Session) -> None:
     
     if existing >= 91:
         print(f"✅ Ya existen {existing} autores")
+        # Verificar si existen citas, si no las hay, crearlas
+        existing_quotes = session.query(Quote).count()
+        print(f"🔍 Citas existentes: {existing_quotes}")
+        
+        if existing_quotes == 0:
+            print("🔄 Creando citas auténticas para autores existentes...")
+            authors = session.query(Author).all()
+            total_quotes = 0
+            for author in authors:
+                quotes_texts = get_quotes_for_author(author.nombre)
+                for quote_text in quotes_texts[:3]:  # Limitamos a máximo 3 citas por autor
+                    quote = Quote(
+                        texto=quote_text,
+                        autor_id=author.id
+                    )
+                    session.add(quote)
+                    total_quotes += 1
+            
+            session.commit()
+            print(f"✅ {total_quotes} citas auténticas creadas")
+        else:
+            print(f"✅ Ya existen {existing_quotes} citas")
         return
 
     print("🚀 FORZANDO RECREACIÓN COMPLETA...")
