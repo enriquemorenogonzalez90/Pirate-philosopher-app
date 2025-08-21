@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from .models import Author, School, Book, Quote, author_school_table
+from .quotes_data import get_quotes_for_author
 import random
 import os
 from datetime import date
@@ -395,14 +396,21 @@ def seed_data_if_needed(session: Session) -> None:
     session.commit()
     print("✅ Libros creados")
     
-    # CREAR CITAS SIMPLES
+    # CREAR CITAS REALES
+    print("🔄 Creando citas auténticas de filósofos...")
+    total_quotes = 0
     for author in authors:
-        quote = Quote(
-            texto=f"Sabiduría de {author.nombre}",
-            autor_id=author.id
-        )
-        session.add(quote)
+        quotes_texts = get_quotes_for_author(author.nombre)
+        # Crear todas las citas disponibles para cada autor (o máximo 3 para no saturar)
+        for quote_text in quotes_texts[:3]:  # Limitamos a máximo 3 citas por autor
+            quote = Quote(
+                texto=quote_text,
+                autor_id=author.id
+            )
+            session.add(quote)
+            total_quotes += 1
+    
     session.commit()
-    print("✅ Citas creadas")
+    print(f"✅ {total_quotes} citas auténticas creadas")
     
     print(f"🎉 COMPLETADO: 91 filósofos de primera línea - todos con biografías reales y detalladas")
