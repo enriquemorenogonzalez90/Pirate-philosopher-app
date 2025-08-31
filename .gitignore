@@ -12,6 +12,9 @@ terraform/terraform.tfvars
 aws-config.env
 .env.aws
 *.pem
+aws/
+.aws/
+aws.json
 
 # Environment files
 .env
@@ -79,3 +82,24 @@ logs
 tmp/
 temp/
 *.tmp
+
+# Docker production files
+docker-compose.prod.yml
+docker-compose.production.yml
+
+# GitHub Actions secrets
+.github/secrets/
+secrets/
+
+# SSL certificates
+*.crt
+*.key
+*.csr
+
+# Database dumps
+*.sql
+*.dump
+
+# Backup files
+*.backup
+*.bak

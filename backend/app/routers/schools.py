@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
-from ..database import get_session
-from ..models import School, Author
-from ..schemas import SchoolCreate, SchoolRead, SchoolReadWithRelations, AuthorRead
+from ..models.database import get_db
+from ..models.models import School, Author
+from ..models.schemas import SchoolCreate, SchoolRead, SchoolReadWithRelations, AuthorRead
 
 
 router = APIRouter(prefix="/schools", tags=["schools"])
@@ -17,7 +17,7 @@ def list_schools(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     sort: Optional[str] = Query(default=None, description="nombre,-nombre,id,-id"),
-    session: Session = Depends(get_session),
+    session: Session = Depends(get_db),
 ) -> List[SchoolRead]:
     stmt = select(School)
     if q:
@@ -38,7 +38,7 @@ def list_schools(
 
 
 @router.get("/{school_id}", response_model=SchoolReadWithRelations)
-def get_school(school_id: int, session: Session = Depends(get_session)) -> SchoolReadWithRelations:
+def get_school(school_id: int, session: Session = Depends(get_db)) -> SchoolReadWithRelations:
     school = session.execute(
         select(School).options(selectinload(School.authors)).where(School.id == school_id)
     ).scalars().first()
@@ -48,7 +48,7 @@ def get_school(school_id: int, session: Session = Depends(get_session)) -> Schoo
 
 
 @router.post("/", response_model=SchoolRead, status_code=201)
-def create_school(payload: SchoolCreate, session: Session = Depends(get_session)) -> SchoolRead:
+def create_school(payload: SchoolCreate, session: Session = Depends(get_db)) -> SchoolRead:
     # Creamos la entidad a mano; Pydantic v2 usa model_dump
     school = School(**payload.model_dump())
     session.add(school)
@@ -58,7 +58,7 @@ def create_school(payload: SchoolCreate, session: Session = Depends(get_session)
 
 
 @router.put("/{school_id}", response_model=SchoolRead)
-def update_school(school_id: int, payload: SchoolCreate, session: Session = Depends(get_session)) -> SchoolRead:
+def update_school(school_id: int, payload: SchoolCreate, session: Session = Depends(get_db)) -> SchoolRead:
     school = session.get(School, school_id)
     if not school:
         raise HTTPException(status_code=404, detail="Escuela no encontrada")
@@ -71,7 +71,7 @@ def update_school(school_id: int, payload: SchoolCreate, session: Session = Depe
 
 
 @router.delete("/{school_id}", status_code=204)
-def delete_school(school_id: int, session: Session = Depends(get_session)) -> None:
+def delete_school(school_id: int, session: Session = Depends(get_db)) -> None:
     school = session.get(School, school_id)
     if not school:
         raise HTTPException(status_code=404, detail="Escuela no encontrada")
@@ -81,7 +81,7 @@ def delete_school(school_id: int, session: Session = Depends(get_session)) -> No
 
 
 @router.get("/{school_id}/authors", response_model=List[AuthorRead])
-def list_school_authors(school_id: int, session: Session = Depends(get_session)) -> List[AuthorRead]:
+def list_school_authors(school_id: int, session: Session = Depends(get_db)) -> List[AuthorRead]:
     school = session.execute(
         select(School).options(selectinload(School.authors)).where(School.id == school_id)
     ).scalars().first()

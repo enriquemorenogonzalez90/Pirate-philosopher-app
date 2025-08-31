@@ -23,7 +23,7 @@ export default function AuthorsPage() {
 
   async function fetchAuthors() {
     setLoading(true);
-    const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     const url = new URL(`${base}/authors/`);
     url.searchParams.set('limit', itemsPerPage.toString());
     url.searchParams.set('offset', ((currentPage - 1) * itemsPerPage).toString());
@@ -49,10 +49,7 @@ export default function AuthorsPage() {
     setCurrentPage(1);
   };
 
-  const filteredAuthors = authors.filter(author =>
-    author.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (author.epoca && author.epoca.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Los autores ya vienen filtrados del backend, no necesitamos filtrar localmente
 
   return (
     <div className="space-y-6">
@@ -80,7 +77,7 @@ export default function AuthorsPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredAuthors.map((author: Author) => (
+            {authors.map((author: Author) => (
               <div key={author.id} className="card hover:shadow-md transition-shadow">
                 <div className="text-center">
                   {author.imagen_url && (
@@ -105,7 +102,7 @@ export default function AuthorsPage() {
             ))}
           </div>
 
-          {filteredAuthors.length === 0 && (
+          {authors.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600">No se encontraron autores que coincidan con tu búsqueda.</p>
             </div>

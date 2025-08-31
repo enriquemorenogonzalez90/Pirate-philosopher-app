@@ -8,7 +8,7 @@ type Quote = {
 };
 
 async function fetchRandomQuote() {
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
+  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const res = await fetch(`${base}/random-quotes?limit=1`, { cache: 'no-store' });
   if (!res.ok) return null;
   const quotes = await res.json();
@@ -16,7 +16,7 @@ async function fetchRandomQuote() {
 }
 
 async function fetchAuthorName(authorId: number) {
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
+  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const res = await fetch(`${base}/authors/${authorId}`, { cache: 'no-store' });
   if (!res.ok) return null;
   const author = await res.json();

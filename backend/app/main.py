@@ -7,8 +7,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from .database import create_db_and_tables, engine
-from .seed import seed_data_if_needed
+from .models.database import engine
+from .models.models import Base
 from .routers import authors, books, schools, quotes, stats
 
 
@@ -51,17 +51,46 @@ def read_root():
 @app.on_event("startup")
 def on_startup() -> None:
     print("🚀 MAIN.PY STARTUP EJECUTÁNDOSE...")
-    create_db_and_tables()
-    print("🚀 CREANDO SESIÓN Y LLAMANDO SEED...")
-    with Session(engine) as session:
-        seed_data_if_needed(session)
-    print("🚀 SEED COMPLETADO...")
-        # Comentamos temporalmente las funciones que descargan imágenes
-        # para permitir que la aplicación arranque más rápido
-        # ensure_author_images(session)
-        # ensure_school_images(session)
-        # fix_generic_book_titles(session)  # Arreglar títulos genéricos primero
-        # ensure_book_covers(session)       # Luego actualizar portadas
+    # Crear todas las tablas
+    Base.metadata.create_all(bind=engine)
+    print("🚀 TABLAS CREADAS...")
+    
+    # Verificar si hay datos JSON y hacer seed básico
+    from pathlib import Path
+    import json
+    
+    data_dir = Path(__file__).parent / "data" / "json"
+    philosophers_file = data_dir / "philosophers_complete_data.json"
+    
+    if philosophers_file.exists():
+        print("🚀 ARCHIVOS JSON ENCONTRADOS - Iniciando seed automático...")
+        try:
+            from .models.database import SessionLocal
+            from .models.models import Author
+            
+            with SessionLocal() as session:
+                if session.query(Author).count() == 0:
+                    print("🚀 EJECUTANDO SEED BÁSICO...")
+                    # Importar y ejecutar seed
+                    try:
+                        import sys
+                        sys.path.append(str(Path(__file__).parent / "data" / "scripts"))
+                        from .data.scripts.seed import PhilosopherSeeder
+                        seeder = PhilosopherSeeder(session)
+                        seeder.seed_all()
+                        session.commit()
+                    except Exception as seed_error:
+                        print(f"⚠️ Error en seed detallado: {seed_error}")
+                        import traceback
+                        traceback.print_exc()
+                else:
+                    print("🚀 DATOS YA EXISTENTES")
+        except Exception as e:
+            print(f"⚠️ Error en seed automático: {e}")
+    else:
+        print("🚀 No se encontraron archivos JSON - Ejecutar extract_philosophers.py primero")
+    
+    print("🚀 BACKEND LISTO")
 
 
 @app.get("/health", tags=["health"]) 

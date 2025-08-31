@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
-from ..database import get_session
-from ..models import Quote
-from ..schemas import QuoteCreate, QuoteRead, QuoteWithAuthor
+from ..models.database import get_db
+from ..models.models import Quote
+from ..models.schemas import QuoteCreate, QuoteRead, QuoteWithAuthor
 
 
 router = APIRouter(prefix="/quotes", tags=["quotes"])
@@ -17,7 +17,7 @@ def list_quotes(
     q: Optional[str] = Query(default=None, description="Buscar por texto"),
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session: Session = Depends(get_session),
+    session: Session = Depends(get_db),
 ) -> List[QuoteWithAuthor]:
     stmt = select(Quote).options(selectinload(Quote.author))
     if autor_id:
@@ -30,7 +30,7 @@ def list_quotes(
 
 
 @router.get("/{quote_id}", response_model=QuoteRead)
-def get_quote(quote_id: int, session: Session = Depends(get_session)) -> QuoteRead:
+def get_quote(quote_id: int, session: Session = Depends(get_db)) -> QuoteRead:
     quote = session.get(Quote, quote_id)
     if not quote:
         raise HTTPException(status_code=404, detail="Cita no encontrada")
@@ -38,7 +38,7 @@ def get_quote(quote_id: int, session: Session = Depends(get_session)) -> QuoteRe
 
 
 @router.post("/", response_model=QuoteRead, status_code=201)
-def create_quote(payload: QuoteCreate, session: Session = Depends(get_session)) -> QuoteRead:
+def create_quote(payload: QuoteCreate, session: Session = Depends(get_db)) -> QuoteRead:
     quote = Quote(**payload.model_dump())
     session.add(quote)
     session.commit()
@@ -47,7 +47,7 @@ def create_quote(payload: QuoteCreate, session: Session = Depends(get_session)) 
 
 
 @router.put("/{quote_id}", response_model=QuoteRead)
-def update_quote(quote_id: int, payload: QuoteCreate, session: Session = Depends(get_session)) -> QuoteRead:
+def update_quote(quote_id: int, payload: QuoteCreate, session: Session = Depends(get_db)) -> QuoteRead:
     quote = session.get(Quote, quote_id)
     if not quote:
         raise HTTPException(status_code=404, detail="Cita no encontrada")
@@ -60,7 +60,7 @@ def update_quote(quote_id: int, payload: QuoteCreate, session: Session = Depends
 
 
 @router.delete("/{quote_id}", status_code=204)
-def delete_quote(quote_id: int, session: Session = Depends(get_session)) -> None:
+def delete_quote(quote_id: int, session: Session = Depends(get_db)) -> None:
     quote = session.get(Quote, quote_id)
     if not quote:
         raise HTTPException(status_code=404, detail="Cita no encontrada")

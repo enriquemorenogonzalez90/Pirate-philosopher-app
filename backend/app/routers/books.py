@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
-from ..database import get_session
-from ..models import Book
-from ..schemas import BookCreate, BookRead, BookWithAuthor
+from ..models.database import get_db
+from ..models.models import Book
+from ..models.schemas import BookCreate, BookRead, BookWithAuthor
 
 
 router = APIRouter(prefix="/books", tags=["books"])
@@ -17,7 +17,7 @@ def list_books(
     q: Optional[str] = Query(default=None, description="Buscar por título"),
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
-    session: Session = Depends(get_session),
+    session: Session = Depends(get_db),
 ) -> List[BookWithAuthor]:
     stmt = select(Book).options(selectinload(Book.author))
     if autor_id:
@@ -30,7 +30,7 @@ def list_books(
 
 
 @router.get("/{book_id}", response_model=BookRead)
-def get_book(book_id: int, session: Session = Depends(get_session)) -> BookRead:
+def get_book(book_id: int, session: Session = Depends(get_db)) -> BookRead:
     book = session.get(Book, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Libro no encontrado")
@@ -38,7 +38,7 @@ def get_book(book_id: int, session: Session = Depends(get_session)) -> BookRead:
 
 
 @router.post("/", response_model=BookRead, status_code=201)
-def create_book(payload: BookCreate, session: Session = Depends(get_session)) -> BookRead:
+def create_book(payload: BookCreate, session: Session = Depends(get_db)) -> BookRead:
     book = Book(**payload.model_dump())
     session.add(book)
     session.commit()
@@ -47,7 +47,7 @@ def create_book(payload: BookCreate, session: Session = Depends(get_session)) ->
 
 
 @router.put("/{book_id}", response_model=BookRead)
-def update_book(book_id: int, payload: BookCreate, session: Session = Depends(get_session)) -> BookRead:
+def update_book(book_id: int, payload: BookCreate, session: Session = Depends(get_db)) -> BookRead:
     book = session.get(Book, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Libro no encontrado")
@@ -60,7 +60,7 @@ def update_book(book_id: int, payload: BookCreate, session: Session = Depends(ge
 
 
 @router.delete("/{book_id}", status_code=204)
-def delete_book(book_id: int, session: Session = Depends(get_session)) -> None:
+def delete_book(book_id: int, session: Session = Depends(get_db)) -> None:
     book = session.get(Book, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Libro no encontrado")

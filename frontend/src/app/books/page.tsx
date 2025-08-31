@@ -23,26 +23,64 @@ export default function BooksPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalBooks, setTotalBooks] = useState(0);
   const itemsPerPage = 12;
 
   useEffect(() => {
-    fetchBooks();
+    fetchBooksAndCount();
   }, [searchTerm, currentPage]);
 
-  async function fetchBooks() {
-    setLoading(true);
-    const base = process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
-    const url = new URL(`${base}/books/`);
-    url.searchParams.set('limit', itemsPerPage.toString());
-    url.searchParams.set('offset', ((currentPage - 1) * itemsPerPage).toString());
-    if (searchTerm) url.searchParams.set('q', searchTerm);
+  async function getTotalBookCount() {
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    let totalCount = 0;
+    let offset = 0;
+    const limit = 100; // Máximo permitido por la API
     
     try {
-      const res = await fetch(url.toString());
-      if (res.ok) {
-        const data = await res.json();
-        setBooks(data);
-        setTotalPages(Math.ceil(40 / itemsPerPage)); // 40 libros del seed
+      while (true) {
+        const url = new URL(`${base}/books/`);
+        url.searchParams.set('limit', limit.toString());
+        url.searchParams.set('offset', offset.toString());
+        if (searchTerm) url.searchParams.set('q', searchTerm);
+        
+        const res = await fetch(url.toString());
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length === 0) break;
+          totalCount += data.length;
+          if (data.length < limit) break; // Última página
+          offset += limit;
+        } else {
+          break;
+        }
+      }
+    } catch (error) {
+      console.error('Error counting books:', error);
+    }
+    
+    return totalCount;
+  }
+
+  async function fetchBooksAndCount() {
+    setLoading(true);
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    
+    try {
+      // Obtener libros de la página actual
+      const booksUrl = new URL(`${base}/books/`);
+      booksUrl.searchParams.set('limit', itemsPerPage.toString());
+      booksUrl.searchParams.set('offset', ((currentPage - 1) * itemsPerPage).toString());
+      if (searchTerm) booksUrl.searchParams.set('q', searchTerm);
+      
+      const booksRes = await fetch(booksUrl.toString());
+      if (booksRes.ok) {
+        const booksData = await booksRes.json();
+        setBooks(booksData);
+        
+        // Obtener el total de libros para calcular las páginas
+        const total = await getTotalBookCount();
+        setTotalBooks(total);
+        setTotalPages(Math.ceil(total / itemsPerPage));
       }
     } catch (error) {
       console.error('Error fetching books:', error);
@@ -56,15 +94,17 @@ export default function BooksPage() {
     setCurrentPage(1);
   };
 
-  const filteredBooks = books.filter(book =>
-    book.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (book.descripcion && book.descripcion.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Los libros ya vienen filtrados del backend, no necesitamos filtrar localmente
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">Libros Filosóficos</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Libros Filosóficos</h1>
+          {totalBooks > 0 && (
+            <p className="text-gray-600 mt-1">{totalBooks} libros disponibles</p>
+          )}
+        </div>
         <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
           <input
             type="text"
@@ -87,7 +127,7 @@ export default function BooksPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBooks.map((book: Book) => (
+            {books.map((book: Book) => (
               <div key={book.id} className="card hover:shadow-md transition-shadow">
                 <div className="text-center">
                   {book.imagen_url && (
@@ -130,7 +170,7 @@ export default function BooksPage() {
             ))}
           </div>
 
-          {filteredBooks.length === 0 && (
+          {books.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600">No se encontraron libros que coincidan con tu búsqueda.</p>
             </div>

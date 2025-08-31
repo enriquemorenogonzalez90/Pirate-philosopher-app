@@ -25,7 +25,7 @@ services:
     container_name: biblioteca_backend
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/biblioteca
-      CORS_ORIGINS: http://localhost:3000, http://frontend:3000, http://127.0.0.1:3000
+      CORS_ORIGINS: "*"
     depends_on:
       db:
         condition: service_healthy

@@ -3,9 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
 
-from ..database import get_session
-from ..models import Author, School, Book, Quote
-from ..schemas import (
+from ..models.database import get_db
+from ..models.models import Author, School, Book, Quote
+from ..models.schemas import (
     AuthorCreate,
     AuthorRead,
     AuthorReadWithRelations,
@@ -26,7 +26,7 @@ def list_authors(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     sort: Optional[str] = Query(default=None, description="nombre,-nombre,id,-id"),
-    session: Session = Depends(get_session),
+    session: Session = Depends(get_db),
 ) -> List[AuthorRead]:
     stmt = select(Author)
     if q:
@@ -53,7 +53,7 @@ def list_authors(
 
 
 @router.get("/{author_id}", response_model=AuthorReadWithRelations)
-def get_author(author_id: int, session: Session = Depends(get_session)) -> AuthorReadWithRelations:
+def get_author(author_id: int, session: Session = Depends(get_db)) -> AuthorReadWithRelations:
     author = session.execute(
         select(Author)
         .options(selectinload(Author.schools), selectinload(Author.books))
@@ -65,7 +65,7 @@ def get_author(author_id: int, session: Session = Depends(get_session)) -> Autho
 
 
 @router.post("/", response_model=AuthorRead, status_code=201)
-def create_author(payload: AuthorCreate, session: Session = Depends(get_session)) -> AuthorRead:
+def create_author(payload: AuthorCreate, session: Session = Depends(get_db)) -> AuthorRead:
     author = Author(**payload.model_dump())
     session.add(author)
     session.commit()
@@ -74,7 +74,7 @@ def create_author(payload: AuthorCreate, session: Session = Depends(get_session)
 
 
 @router.put("/{author_id}", response_model=AuthorRead)
-def update_author(author_id: int, payload: AuthorCreate, session: Session = Depends(get_session)) -> AuthorRead:
+def update_author(author_id: int, payload: AuthorCreate, session: Session = Depends(get_db)) -> AuthorRead:
     author = session.get(Author, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Autor no encontrado")
@@ -87,7 +87,7 @@ def update_author(author_id: int, payload: AuthorCreate, session: Session = Depe
 
 
 @router.delete("/{author_id}", status_code=204)
-def delete_author(author_id: int, session: Session = Depends(get_session)) -> None:
+def delete_author(author_id: int, session: Session = Depends(get_db)) -> None:
     author = session.get(Author, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Autor no encontrado")
@@ -97,7 +97,7 @@ def delete_author(author_id: int, session: Session = Depends(get_session)) -> No
 
 
 @router.get("/{author_id}/schools", response_model=List[SchoolRead])
-def list_author_schools(author_id: int, session: Session = Depends(get_session)) -> List[SchoolRead]:
+def list_author_schools(author_id: int, session: Session = Depends(get_db)) -> List[SchoolRead]:
     author = session.execute(
         select(Author).options(selectinload(Author.schools)).where(Author.id == author_id)
     ).scalars().first()
@@ -107,7 +107,7 @@ def list_author_schools(author_id: int, session: Session = Depends(get_session))
 
 
 @router.post("/{author_id}/schools/{school_id}", status_code=204)
-def link_author_school(author_id: int, school_id: int, session: Session = Depends(get_session)) -> None:
+def link_author_school(author_id: int, school_id: int, session: Session = Depends(get_db)) -> None:
     author = session.get(Author, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Autor no encontrado")
@@ -122,7 +122,7 @@ def link_author_school(author_id: int, school_id: int, session: Session = Depend
 
 
 @router.delete("/{author_id}/schools/{school_id}", status_code=204)
-def unlink_author_school(author_id: int, school_id: int, session: Session = Depends(get_session)) -> None:
+def unlink_author_school(author_id: int, school_id: int, session: Session = Depends(get_db)) -> None:
     author = session.get(Author, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Autor no encontrado")
@@ -137,13 +137,13 @@ def unlink_author_school(author_id: int, school_id: int, session: Session = Depe
 
 
 @router.get("/{author_id}/books", response_model=List[BookRead])
-def list_author_books(author_id: int, session: Session = Depends(get_session)) -> List[BookRead]:
+def list_author_books(author_id: int, session: Session = Depends(get_db)) -> List[BookRead]:
     books = session.execute(select(Book).where(Book.autor_id == author_id)).scalars().all()
     return books
 
 
 @router.get("/{author_id}/quotes", response_model=List[QuoteRead])
-def list_author_quotes(author_id: int, session: Session = Depends(get_session)) -> List[QuoteRead]:
+def list_author_quotes(author_id: int, session: Session = Depends(get_db)) -> List[QuoteRead]:
     quotes = session.execute(select(Quote).where(Quote.autor_id == author_id)).scalars().all()
     return quotes
 

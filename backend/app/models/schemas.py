@@ -17,6 +17,10 @@ class AuthorBase(ORMModel):
     fecha_defuncion: Optional[date] = None
     imagen_url: Optional[str] = None
     biografia: Optional[str] = None
+    escuela_pensamiento: Optional[str] = None
+    areas_interes: Optional[str] = None
+    enlace_iep: Optional[str] = None
+    enlace_stanford: Optional[str] = None
 
 
 class AuthorCreate(AuthorBase):
@@ -72,13 +76,13 @@ class QuoteCreate(QuoteBase):
 
 class QuoteRead(QuoteBase):
     id: int
-    autor_id: int
+    autor_id: Optional[int] = None
 
 
 class QuoteWithAuthor(QuoteBase):
     id: int
-    autor_id: int
-    author: AuthorBase
+    autor_id: Optional[int] = None
+    author: Optional[AuthorBase] = None
 
 
 class AuthorReadWithRelations(AuthorRead):
