@@ -2,6 +2,14 @@
 
 Aplicación web moderna para explorar filosofía a través de autores, escuelas, libros y citas.
 
+## 🌐 Demo en Vivo
+
+**🚀 Aplicación desplegada**: [http://3.82.93.186:3000](http://3.82.93.186:3000)  
+**📡 API**: [http://3.82.93.186:8000](http://3.82.93.186:8000)  
+**📖 Documentación**: [http://3.82.93.186:8000/docs](http://3.82.93.186:8000/docs)
+
+*Desplegado en AWS EC2 con infraestructura como código (Terraform)*
+
 ## ✨ Datos
 
 - **114 Filósofos** con biografías completas
