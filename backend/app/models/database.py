@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
 
-# URL de la base de datos desde variable de entorno o por defecto
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/filosofia_db")
+# URL de la base de datos desde variable de entorno (requerida)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Configurar el engine
 engine = create_engine(DATABASE_URL)
