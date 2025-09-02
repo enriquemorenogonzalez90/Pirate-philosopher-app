@@ -112,3 +112,4 @@ deploy-terraform.sh
 docker-compose.prod.yml
 docker-compose.test.yml
 CLAUDE.md
+MIGRATION_PLAN.md

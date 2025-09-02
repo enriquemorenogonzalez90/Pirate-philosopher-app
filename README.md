@@ -2,13 +2,17 @@
 
 Aplicación web moderna para explorar filosofía a través de autores, escuelas, libros y citas.
 
-## 🌐 Demo en Vivo
+## 🚧 Migración a Serverless
 
-**🚀 Aplicación desplegada**: [http://3.82.93.186:3000](http://3.82.93.186:3000)  
-**📡 API**: [http://3.82.93.186:8000](http://3.82.93.186:8000)  
-**📖 Documentación**: [http://3.82.93.186:8000/docs](http://3.82.93.186:8000/docs)
+**Estado:** En proceso de migración de EC2/RDS a arquitectura serverless
 
-*Desplegado en AWS EC2 con infraestructura como código (Terraform)*
+### Migración planificada:
+- **Backend FastAPI** → **AWS Lambda + API Gateway**
+- **PostgreSQL RDS** → **RDS Serverless v2** 
+- **EC2 + Docker** → **Vercel/Netlify**
+- **Costo:** $5.82/mes → $3-6/mes (solo por uso)
+
+*Demo estará disponible tras completar la migración*
 
 ## ✨ Datos
 
