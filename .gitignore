@@ -102,4 +102,4 @@ secrets/
 
 # Backup files
 *.backup
-*.bak
+*.bakaws/
