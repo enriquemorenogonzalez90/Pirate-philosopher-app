@@ -102,4 +102,13 @@ secrets/
 
 # Backup files
 *.backup
-*.bakaws/
+*.bak
+
+# AWS CLI directory
+aws/
+
+# Obsolete files for serverless migration
+deploy-terraform.sh
+docker-compose.prod.yml
+docker-compose.test.yml
+CLAUDE.md
