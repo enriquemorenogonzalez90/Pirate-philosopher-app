@@ -8,13 +8,7 @@ terraform/terraform.tfstate.backup
 terraform/terraform.tfvars
 *.tfplan
 
-# AWS
-aws-config.env
-.env.aws
-*.pem
-aws/
-.aws/
-aws.json
+
 
 # Environment files
 .env
@@ -34,6 +28,18 @@ credentials.json
 service-account*.json
 gcp-*.json
 *-credentials.json
+
+# Python cache and test files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+pytest.ini
+*.log
+
+# Terraform state (contains sensitive info)
+terraform-gcp/terraform.tfstate*
+terraform-gcp/.terraform/
 
 # Docker
 .dockerignore

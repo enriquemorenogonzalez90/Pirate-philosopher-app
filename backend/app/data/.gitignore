@@ -1,7 +1,0 @@
-# Ignorar archivos de cache y temporales
-cache/
-*.tmp
-*.log
-
-# Ignorar archivos JSON grandes (opcional - comentar si quieres commitear los datos)
-# json/*.json
