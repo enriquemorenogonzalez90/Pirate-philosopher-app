@@ -108,3 +108,5 @@ Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
 ---
 
 *Desarrollado con ❤️ para democratizar el acceso al conocimiento filosófico*
+
+<!-- CI/CD Test - Trigger deployment -->
