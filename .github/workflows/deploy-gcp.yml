@@ -11,7 +11,7 @@ on:
   workflow_dispatch:  # Manual trigger
 
 env:
-  GCP_PROJECT_ID: filosofia-app-serverless
+  GCP_PROJECT_ID: piratephilosopher
   GCP_REGION: europe-southwest1
   FUNCTION_NAME: filosofia-api
 
@@ -32,7 +32,7 @@ jobs:
     - name: Install dependencies
       working-directory: ./backend
       run: |
-        pip install -r requirements-gcp.txt
+        pip install -r requirements.txt
         pip install pytest
 
     - name: Run tests
@@ -98,6 +98,9 @@ jobs:
     - name: Deploy Cloud Function
       working-directory: ./backend
       run: |
+        # Copy .env.gcp from root to backend directory for deployment
+        cp ../.env.gcp ./.env.gcp
+        
         gcloud functions deploy ${{ env.FUNCTION_NAME }} \
           --runtime python311 \
           --trigger-http \
@@ -105,7 +108,7 @@ jobs:
           --region ${{ env.GCP_REGION }} \
           --source . \
           --entry-point app \
-          --requirements-file requirements-gcp.txt \
+          --requirements-file requirements.txt \
           --memory 512MB \
           --timeout 60s \
           --env-vars-file .env.gcp
