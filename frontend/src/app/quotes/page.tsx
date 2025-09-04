@@ -9,10 +9,10 @@ type Author = {
 };
 
 type Quote = { 
-  id: number; 
+  id: string; 
   texto: string; 
-  autor_id: number;
-  author?: Author;
+  autor_id: string;
+  autor_nombre?: string;
 };
 
 export default function QuotesPage() {
@@ -90,25 +90,15 @@ export default function QuotesPage() {
                   <p className="text-lg text-gray-800 italic mb-4">"{quote.texto}"</p>
                   <footer className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      {quote.author?.imagen_url && (
-                        <img
-                          src={quote.author.imagen_url}
-                          alt={quote.author.nombre}
-                          className="w-8 h-8 rounded-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(quote.author?.nombre || 'Autor')}&background=2563eb&color=fff&size=100&bold=true&format=png`;
-                          }}
-                        />
-                      )}
                       <span className="text-sm text-gray-600">
-                        — {quote.author?.nombre || `Autor #${quote.autor_id}`}
+                        — {quote.autor_nombre || 'Autor desconocido'}
                       </span>
                     </div>
                     <a 
                       href={`/authors/${quote.autor_id}`}
                       className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                     >
-                      Ver perfil de {quote.author?.nombre || 'Autor'} →
+                      Ver perfil de {quote.autor_nombre || 'Autor'} →
                     </a>
                   </footer>
                 </blockquote>

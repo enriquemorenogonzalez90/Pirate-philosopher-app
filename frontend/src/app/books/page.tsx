@@ -32,33 +32,21 @@ export default function BooksPage() {
 
   async function getTotalBookCount() {
     const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    let totalCount = 0;
-    let offset = 0;
-    const limit = 100; // Máximo permitido por la API
     
     try {
-      while (true) {
-        const url = new URL(`${base}/books/`);
-        url.searchParams.set('limit', limit.toString());
-        url.searchParams.set('offset', offset.toString());
-        if (searchTerm) url.searchParams.set('q', searchTerm);
-        
-        const res = await fetch(url.toString());
-        if (res.ok) {
-          const data = await res.json();
-          if (data.length === 0) break;
-          totalCount += data.length;
-          if (data.length < limit) break; // Última página
-          offset += limit;
-        } else {
-          break;
-        }
+      const url = new URL(`${base}/books/count`);
+      if (searchTerm) url.searchParams.set('q', searchTerm);
+      
+      const res = await fetch(url.toString());
+      if (res.ok) {
+        const data = await res.json();
+        return data.count || 0;
       }
     } catch (error) {
       console.error('Error counting books:', error);
     }
     
-    return totalCount;
+    return 0;
   }
 
   async function fetchBooksAndCount() {
@@ -141,7 +129,7 @@ export default function BooksPage() {
                     {book.titulo}
                   </h3>
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    {book.author.imagen_url && (
+                    {book.author?.imagen_url && (
                       <img
                         src={book.author.imagen_url}
                         alt={book.author.nombre}
@@ -149,7 +137,7 @@ export default function BooksPage() {
                       />
                     )}
                     <p className="text-sm text-gray-600">
-                      por {book.author.nombre}
+                      por {book.author?.nombre || 'Autor desconocido'}
                     </p>
                   </div>
                   {book.descripcion && (
@@ -162,7 +150,7 @@ export default function BooksPage() {
                       href={`/authors/${book.autor_id}`}
                       className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                     >
-                      Ver perfil de {book.author.nombre} →
+                      Ver perfil de {book.author?.nombre || 'autor'} →
                     </a>
                   </div>
                 </div>

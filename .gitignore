@@ -21,6 +21,19 @@ aws.json
 .env.local
 .env.production
 .env.test
+.env.gcp-setup
+*.env.gcp*
+
+# GCP Credentials (NEVER COMMIT)
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+key.json
+credentials.json
+service-account*.json
+gcp-*.json
+*-credentials.json
 
 # Docker
 .dockerignore

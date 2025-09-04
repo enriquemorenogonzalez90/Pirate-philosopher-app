@@ -1,0 +1,125 @@
+name: 🚀 Deploy to GCP
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'backend/**'
+      - 'terraform-gcp/**'
+      - '.github/workflows/deploy-gcp.yml'
+  
+  workflow_dispatch:  # Manual trigger
+
+env:
+  GCP_PROJECT_ID: filosofia-app-serverless
+  GCP_REGION: europe-southwest1
+  FUNCTION_NAME: filosofia-api
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    name: 🧪 Test Backend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        pip install -r requirements-gcp.txt
+        pip install pytest
+
+    - name: Run tests
+      working-directory: ./backend
+      run: |
+        # Run basic import tests
+        python -c "from app.main_gcp import app; print('✅ FastAPI app imports successfully')"
+        python -c "from app.services.firestore_service import FirestoreService; print('✅ Firestore service imports successfully')"
+
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    name: 🏗️ Deploy Infrastructure
+    needs: test-backend
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
+    - name: Terraform Init
+      working-directory: ./terraform-gcp
+      run: terraform init
+
+    - name: Terraform Plan
+      working-directory: ./terraform-gcp
+      run: terraform plan -var="project_id=${{ env.GCP_PROJECT_ID }}"
+
+    - name: Terraform Apply
+      working-directory: ./terraform-gcp
+      run: terraform apply -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}"
+
+  deploy-function:
+    runs-on: ubuntu-latest
+    name: ☁️ Deploy Cloud Function
+    needs: [test-backend, deploy-infrastructure]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Deploy Cloud Function
+      working-directory: ./backend
+      run: |
+        gcloud functions deploy ${{ env.FUNCTION_NAME }} \
+          --runtime python311 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --region ${{ env.GCP_REGION }} \
+          --source . \
+          --entry-point app \
+          --requirements-file requirements-gcp.txt \
+          --memory 512MB \
+          --timeout 60s \
+          --env-vars-file .env.gcp
+
+    - name: Get Function URL
+      run: |
+        FUNCTION_URL=$(gcloud functions describe ${{ env.FUNCTION_NAME }} \
+          --region ${{ env.GCP_REGION }} \
+          --format="value(httpsTrigger.url)")
+        echo "🚀 Function deployed at: $FUNCTION_URL"
+        echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
+
+    - name: Test deployment
+      run: |
+        echo "🧪 Testing deployment..."
+        curl -f "$FUNCTION_URL/health" || exit 1
+        echo "✅ Deployment successful!"

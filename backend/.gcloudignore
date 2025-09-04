@@ -1,0 +1,27 @@
+# This file specifies files that are intentionally untracked by gcloud
+# when uploading to Cloud Functions
+
+.gcloudignore
+.git
+.gitignore
+README.md
+README_STRUCTURE.md
+Dockerfile*
+docker-compose*
+tests/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.local
+.venv/
+env/
+venv/
+requirements.txt
+aws/
+terraform/
+
+# Keep only GCP requirements
+!requirements-gcp.txt
