@@ -19,9 +19,7 @@ __pycache__/
 .venv/
 env/
 venv/
-requirements.txt
 aws/
 terraform/
 
-# Keep only GCP requirements
-!requirements-gcp.txt
+# Allow requirements.txt for Docker builds
