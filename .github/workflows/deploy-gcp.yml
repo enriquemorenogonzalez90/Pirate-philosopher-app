@@ -1,4 +1,4 @@
-name: 🚀 Deploy to GCP - Option 1
+name: 🚀 Deploy to GCP - Option 2
 
 on:
   push:
@@ -106,16 +106,12 @@ jobs:
     - name: Deploy to Cloud Run
       working-directory: ./backend
       run: |
-        # Build container with explicit Dockerfile and deploy to Cloud Run
-        # Copy Dockerfile-gcp to Dockerfile for gcloud builds
-        cp Dockerfile-gcp Dockerfile
-        
-        # Build and push to Container Registry
-        gcloud builds submit --tag gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} .
+        # Build container using cloudbuild.yaml with explicit Dockerfile-gcp
+        gcloud builds submit --config cloudbuild.yaml --substitutions=_PROJECT_ID=${{ env.GCP_PROJECT_ID }} .
         
         # Deploy the built image to Cloud Run
         gcloud run deploy ${{ env.FUNCTION_NAME }} \
-          --image gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} \
+          --image gcr.io/${{ env.GCP_PROJECT_ID }}/filosofia-api \
           --region ${{ env.GCP_REGION }} \
           --allow-unauthenticated \
           --memory 512Mi \
