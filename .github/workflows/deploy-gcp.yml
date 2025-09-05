@@ -113,7 +113,6 @@ jobs:
           --region ${{ env.GCP_REGION }} \
           --source . \
           --entry-point app \
-          --requirements-file requirements.txt \
           --memory 512MB \
           --timeout 60s \
           --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}"
