@@ -73,6 +73,14 @@ jobs:
       working-directory: ./terraform-gcp
       run: terraform plan -var="project_id=${{ env.GCP_PROJECT_ID }}"
 
+    - name: Import existing resources (ignore errors)
+      working-directory: ./terraform-gcp
+      run: |
+        # Import existing resources, ignore errors if already imported
+        terraform import google_firestore_database.database "${{ env.GCP_PROJECT_ID }}/(default)" || true
+        terraform import google_storage_bucket.functions_bucket "${{ env.GCP_PROJECT_ID }}-functions-source" || true
+        terraform import google_storage_bucket.assets_bucket "${{ env.GCP_PROJECT_ID }}-assets" || true
+
     - name: Terraform Apply
       working-directory: ./terraform-gcp
       run: terraform apply -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}"
