@@ -106,9 +106,13 @@ jobs:
     - name: Deploy to Cloud Run
       working-directory: ./backend
       run: |
-        # Build and deploy using Cloud Run instead of Cloud Functions
+        # Build container with explicit Dockerfile and deploy to Cloud Run
+        # First, build and push to Artifact Registry
+        gcloud builds submit --tag gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} --file=Dockerfile-gcp .
+        
+        # Deploy the built image to Cloud Run
         gcloud run deploy ${{ env.FUNCTION_NAME }} \
-          --source . \
+          --image gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} \
           --region ${{ env.GCP_REGION }} \
           --allow-unauthenticated \
           --memory 512Mi \
