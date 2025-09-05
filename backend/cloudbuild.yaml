@@ -4,13 +4,13 @@ steps:
     args: [
       'build', 
       '-f', 'Dockerfile-gcp',
-      '-t', 'gcr.io/$PROJECT_ID/filosofia-api', 
+      '-t', 'gcr.io/piratephilosopher/filosofia-api', 
       '.'
     ]
 
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/filosofia-api']
+    args: ['push', 'gcr.io/piratephilosopher/filosofia-api']
 
 images:
-  - 'gcr.io/$PROJECT_ID/filosofia-api'
+  - 'gcr.io/piratephilosopher/filosofia-api'

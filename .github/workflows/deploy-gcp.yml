@@ -107,7 +107,7 @@ jobs:
       working-directory: ./backend
       run: |
         # Build container using cloudbuild.yaml with explicit Dockerfile-gcp
-        gcloud builds submit --config cloudbuild.yaml --substitutions=_PROJECT_ID=${{ env.GCP_PROJECT_ID }} .
+        gcloud builds submit --config cloudbuild.yaml .
         
         # Deploy the built image to Cloud Run
         gcloud run deploy ${{ env.FUNCTION_NAME }} \
