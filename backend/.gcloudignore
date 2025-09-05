@@ -6,7 +6,7 @@
 .gitignore
 README.md
 README_STRUCTURE.md
-Dockerfile*
+# Dockerfile* - commented out to allow Dockerfile-gcp
 docker-compose*
 tests/
 .pytest_cache/

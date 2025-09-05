@@ -109,7 +109,7 @@ jobs:
         # Copy Dockerfile-gcp to Dockerfile for standard deployment
         cp Dockerfile-gcp Dockerfile
         
-        # Deploy directly from source using buildpacks
+        # Deploy directly from source with clear base image flag
         gcloud run deploy ${{ env.FUNCTION_NAME }} \
           --source . \
           --region ${{ env.GCP_REGION }} \
@@ -117,6 +117,7 @@ jobs:
           --memory 512Mi \
           --cpu 1 \
           --timeout 60 \
+          --clear-base-image \
           --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}"
 
     - name: Get Service URL
