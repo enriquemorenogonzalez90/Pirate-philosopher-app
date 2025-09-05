@@ -107,16 +107,16 @@ jobs:
       working-directory: ./backend
       run: |
         gcloud functions deploy ${{ env.FUNCTION_NAME }} \
-          --gen2 \
+          --no-gen2 \
           --runtime python311 \
           --trigger-http \
           --allow-unauthenticated \
           --region ${{ env.GCP_REGION }} \
           --source . \
           --entry-point app \
-          --memory 512Mi \
+          --memory 512MB \
           --timeout 60s \
-          --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }},PORT=8080"
+          --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}"
 
     - name: Get Function URL
       run: |
