@@ -12,7 +12,7 @@ on:
 
 env:
   GCP_PROJECT_ID: piratephilosopher
-  GCP_REGION: europe-southwest1
+  GCP_REGION: europe-west1
   FUNCTION_NAME: filosofia-api
 
 jobs:
