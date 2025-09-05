@@ -85,9 +85,9 @@ jobs:
       working-directory: ./terraform-gcp
       run: terraform apply -auto-approve -var="project_id=${{ env.GCP_PROJECT_ID }}"
 
-  deploy-function:
+  deploy-service:
     runs-on: ubuntu-latest
-    name: ☁️ Deploy Cloud Function
+    name: ☁️ Deploy to Cloud Run
     needs: [test-backend, deploy-infrastructure]
     if: github.ref == 'refs/heads/main'
     
@@ -103,31 +103,30 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
 
-    - name: Deploy Cloud Function
+    - name: Deploy to Cloud Run
       working-directory: ./backend
       run: |
-        gcloud functions deploy ${{ env.FUNCTION_NAME }} \
-          --no-gen2 \
-          --runtime python311 \
-          --trigger-http \
-          --allow-unauthenticated \
-          --region ${{ env.GCP_REGION }} \
+        # Build and deploy using Cloud Run instead of Cloud Functions
+        gcloud run deploy ${{ env.FUNCTION_NAME }} \
           --source . \
-          --entry-point app \
-          --memory 512MB \
-          --timeout 60s \
-          --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}"
-
-    - name: Get Function URL
-      run: |
-        FUNCTION_URL=$(gcloud functions describe ${{ env.FUNCTION_NAME }} \
           --region ${{ env.GCP_REGION }} \
-          --format="value(httpsTrigger.url)")
-        echo "🚀 Function deployed at: $FUNCTION_URL"
-        echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
+          --allow-unauthenticated \
+          --memory 512Mi \
+          --cpu 1 \
+          --timeout 60 \
+          --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}" \
+          --port 8000
+
+    - name: Get Service URL
+      run: |
+        SERVICE_URL=$(gcloud run services describe ${{ env.FUNCTION_NAME }} \
+          --region ${{ env.GCP_REGION }} \
+          --format="value(status.url)")
+        echo "🚀 Service deployed at: $SERVICE_URL"
+        echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
 
     - name: Test deployment
       run: |
         echo "🧪 Testing deployment..."
-        curl -f "$FUNCTION_URL/health" || exit 1
+        curl -f "$SERVICE_URL/health" || exit 1
         echo "✅ Deployment successful!"
