@@ -107,8 +107,11 @@ jobs:
       working-directory: ./backend
       run: |
         # Build container with explicit Dockerfile and deploy to Cloud Run
-        # First, build and push to Artifact Registry
-        gcloud builds submit --tag gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} --dockerfile=Dockerfile-gcp .
+        # Copy Dockerfile-gcp to Dockerfile for gcloud builds
+        cp Dockerfile-gcp Dockerfile
+        
+        # Build and push to Container Registry
+        gcloud builds submit --tag gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.FUNCTION_NAME }} .
         
         # Deploy the built image to Cloud Run
         gcloud run deploy ${{ env.FUNCTION_NAME }} \
