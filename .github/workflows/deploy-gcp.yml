@@ -1,4 +1,4 @@
-name: 🚀 Deploy to GCP
+name: 🚀 Deploy to GCP - Option 1
 
 on:
   push:
