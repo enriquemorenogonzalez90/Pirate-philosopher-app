@@ -106,9 +106,6 @@ jobs:
     - name: Deploy Cloud Function
       working-directory: ./backend
       run: |
-        # Copy .env.gcp from root to backend directory for deployment
-        cp ../.env.gcp ./.env.gcp
-        
         gcloud functions deploy ${{ env.FUNCTION_NAME }} \
           --runtime python311 \
           --trigger-http \
@@ -119,7 +116,7 @@ jobs:
           --requirements-file requirements.txt \
           --memory 512MB \
           --timeout 60s \
-          --env-vars-file .env.gcp
+          --set-env-vars "GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }},GCP_REGION=${{ env.GCP_REGION }}"
 
     - name: Get Function URL
       run: |
