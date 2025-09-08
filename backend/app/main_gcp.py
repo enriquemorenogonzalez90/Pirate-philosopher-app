@@ -1,5 +1,5 @@
 """
-FastAPI app optimized for Google Cloud Run
+FastAPI app optimized for Google Cloud Functions
 """
 import os
 from typing import List
@@ -21,7 +21,7 @@ def get_cors_origins_from_env() -> List[str]:
 app = FastAPI(
     title="Filosofía App API - Serverless",
     version="2.0.0",
-    description="Philosophy app API running on Google Cloud Run + Firestore"
+    description="Philosophy app API running on Google Cloud Functions + Firestore"
 )
 
 # CORS configuration
@@ -53,7 +53,7 @@ def read_root():
         "message": "Filosofía App API - Serverless Edition",
         "version": "2.0.0",
         "database": "Firestore",
-        "platform": "Google Cloud Run"
+        "platform": "Google Cloud Functions"
     }
 
 
@@ -62,10 +62,25 @@ def healthcheck():
     """Health check endpoint"""
     return {
         "status": "ok",
-        "platform": "cloud-run",
+        "platform": "gcp-cloud-functions",
         "database": "firestore"
     }
 
 
-# Entry point for Cloud Run
-# The app is started by start.py which uses uvicorn
+# Cloud Functions entry point
+# This will be used by functions-framework
+def main(request):
+    """Cloud Functions entry point"""
+    # Import here to avoid cold start issues
+    import functions_framework
+    from werkzeug.serving import WSGIRequestHandler
+    
+    # This converts the Cloud Function request to ASGI
+    # functions-framework handles the conversion automatically
+    pass
+
+
+# For local testing with functions-framework
+if __name__ == "__main__":
+    import functions_framework
+    functions_framework.create_app(main)
