@@ -2,7 +2,7 @@
 
 Modern web application to explore philosophy through authors, philosophical schools, books, and inspirational quotes.
 
-🌐 **[View live application →](https://piratephilosopher.com)**
+🌐 **[View live application →](https://www.piratephilosopher.com)**
 
 ## 🌟 Current Status
 
@@ -11,7 +11,7 @@ Modern web application to explore philosophy through authors, philosophical scho
 - ✅ **Backend:** FastAPI on Google Cloud Run
 - ✅ **Database:** Google Firestore (NoSQL)
 - ✅ **Frontend:** Next.js 14 with TypeScript deployed on Vercel
-- ✅ **Domain:** piratephilosopher.com
+- ✅ **Domain:** www.piratephilosopher.com
 - ✅ **Infrastructure:** Terraform for GCP
 
 ## ✨ Content
