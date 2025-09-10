@@ -1,112 +1,115 @@
 # 🏛️ Pirate Philosopher
 
-Aplicación web moderna para explorar filosofía a través de autores, escuelas filosóficas, libros y citas inspiradoras.
+Modern web application to explore philosophy through authors, philosophical schools, books, and inspirational quotes.
 
-## 🌟 Estado Actual
+🌐 **[View live application →](https://piratephilosopher.com)**
 
-**Arquitectura:** Completamente migrado a **GCP Serverless + Firestore**
+## 🌟 Current Status
 
-- ✅ **Backend:** FastAPI en Google Cloud Functions
+**Architecture:** Fully migrated to **GCP Serverless + Firestore**
+
+- ✅ **Backend:** FastAPI on Google Cloud Run
 - ✅ **Database:** Google Firestore (NoSQL)
-- ✅ **Frontend:** Next.js 14 con TypeScript
-- ✅ **Infraestructura:** Terraform para GCP
+- ✅ **Frontend:** Next.js 14 with TypeScript deployed on Vercel
+- ✅ **Domain:** piratephilosopher.com
+- ✅ **Infrastructure:** Terraform for GCP
 
-## ✨ Contenido
+## ✨ Content
 
-- **200+ Filósofos** con biografías completas
-- **20+ Escuelas** filosóficas históricas
-- **182 Libros** con títulos reales de LibriVox
-- **60+ Citas** inspiradoras verificadas
+- **200+ Philosophers** with complete biographies
+- **20+ Philosophical Schools** throughout history
+- **182 Books** with real titles from LibriVox
+- **60+ Inspirational Quotes** verified
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
 **Frontend:**
-- Next.js 14 con App Router
+- Next.js 14 with App Router
 - TypeScript & Tailwind CSS
-- Server-Side Rendering optimizado
+- Optimized Server-Side Rendering
 
 **Backend:**
-- FastAPI (Python) optimizado para Cloud Functions
-- Google Firestore como base de datos NoSQL
-- Pydantic para validación de datos
+- FastAPI (Python) optimized for Cloud Functions
+- Google Firestore as NoSQL database
+- Pydantic for data validation
 
-**Infraestructura:**
-- Google Cloud Functions (Serverless)
+**Infrastructure:**
+- Google Cloud Run (Backend Serverless)
 - Google Firestore (Database)
-- Terraform para Infrastructure as Code
+- Vercel (Frontend Deployment)
+- Terraform for Infrastructure as Code
 
-## 🚀 Desarrollo Local
+## 🚀 Local Development
 
-### Prerequisitos
+### Prerequisites
 - Docker & Docker Compose
-- Node.js 18+ (para frontend)
-- Google Cloud credentials configuradas
+- Node.js 18+ (for frontend)
+- Google Cloud credentials configured
 
 ### Quick Start
 
 ```bash
-# Clonar repositorio
-git clone https://github.com/tu-usuario/pirate-philosopher
+# Clone repository
+git clone https://github.com/your-username/pirate-philosopher
 cd pirate-philosopher
 
-# Configurar variables de entorno
+# Configure environment variables
 cp .env.gcp .env.gcp.local
-# Editar .env.gcp.local con tus configuraciones
+# Edit .env.gcp.local with your configurations
 
-# Levantar backend (Docker)
+# Start backend (Docker)
 docker-compose -f docker-compose-gcp.yml up -d backend
 
-# Levantar frontend (local)
+# Start frontend (local)
 cd frontend
 npm install
 npm run dev
 ```
 
-### URLs de Desarrollo
+### Development URLs
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:8000
 - **API Docs:** http://localhost:8000/docs
 
-## 📚 Características
+## 📚 Features
 
-- **🔍 Búsqueda** de filósofos por nombre y época
-- **📖 Catálogo** de libros con enlaces a audiolibros
-- **🏛️ Escuelas** filosóficas con sus representantes
-- **💬 Citas** inspiradoras categorizadas
-- **📱 Responsive** optimizado para móvil
-- **⚡ Performance** con SSR y optimizaciones Next.js
+- **🔍 Search** philosophers by name and era
+- **📖 Book Catalog** with audiobook links
+- **🏛️ Philosophical Schools** with their representatives
+- **💬 Inspirational Quotes** categorized
+- **📱 Responsive** mobile-optimized design
+- **⚡ Performance** with SSR and Next.js optimizations
 
 ## 🚧 Roadmap
 
-| Característica | Estado |
-|---------------|--------|
-| 🧱 **Base de datos Firestore** | ✅ **Completado** |
-| 📚 **API REST completa** | ✅ **Completado** |
-| 🎨 **Frontend moderno** | ✅ **Completado** |
-| 🔍 **Búsqueda avanzada** | 🔄 En progreso |
-| 🤖 **Integración IA** | 🔜 Próximo |
-| 🌐 **PWA** | 🔜 Próximo |
+| Feature | Status |
+|---------|--------|
+| 🧱 **Firestore Database** | ✅ **Completed** |
+| 📚 **Complete REST API** | ✅ **Completed** |
+| 🎨 **Modern Frontend** | ✅ **Completed** |
+| 🔍 **Advanced Search** | 🔄 In Progress |
+| 🤖 **AI Integration** | 🔜 Coming Soon |
+| 🌐 **PWA** | 🔜 Coming Soon |
 
-## 📄 Documentación
+## 📄 Documentation
 
-La documentación técnica completa está disponible en:
-- **CLAUDE.md** - Guía técnica detallada para desarrollo
-- **API Docs** - http://localhost:8000/docs (cuando ejecutes el backend)
+Complete technical documentation is available at:
+- **API Docs** - http://localhost:8000/docs (when running backend)
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-1. Fork el repositorio
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/new-functionality`)
+3. Commit changes (`git commit -m 'Add new functionality'`)
+4. Push to branch (`git push origin feature/new-functionality`)
+5. Open Pull Request
 
-## 📜 Licencia
+## 📜 License
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+This project is under the MIT License. See `LICENSE` for more details.
 
 ---
 
-*Desarrollado con ❤️ para democratizar el acceso al conocimiento filosófico*
+*Developed with ❤️ to democratize access to philosophical knowledge*
 
 <!-- CI/CD Test - Trigger deployment -->

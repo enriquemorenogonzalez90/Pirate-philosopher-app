@@ -132,3 +132,5 @@ docker-compose.prod.yml
 docker-compose.test.yml
 CLAUDE.md
 MIGRATION_PLAN.md
+NEXT_STEPS.md
+setup-gcp.sh
